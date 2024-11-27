@@ -38,7 +38,8 @@
   - You will likely also want to set up your key binds to be more like Half-Life. This can be done under Options -> N64 Binds.
 
 ### Misc Notes
-- No scripts are used in the run. All mQuake settings are default. Auto hopping is enabled by default in mQuake.
+- No scripts or autohotkeys are allowed in the run. Auto hopping is allowed and enabled by default in mQuake.
+- Use `\mq_server DeleteConfig default` to restore the default run-legal configuration.
 - The Discord authorize thing is annoying and there's no launch flag (yet) to turn it off. However, the perms it asks for are relatively innocuous, and it'll stop asking after you authorize it.
   - https://github.com/coop-deluxe/sm64coopdx/issues/514
 - It is possible to launch the game like so: `sm64coopdx.exe --skip-intro --skip-update-check --hide-loading-screen --server 6677` (the 6677 is arbitrary)
