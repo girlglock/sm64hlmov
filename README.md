@@ -1,5 +1,5 @@
-# sm64hl1m
-## Super Mario 64 with Half-Life 1 Movement Speedrun Modpack
+# sm64hlmov
+## Super Mario 64 with Half-Life/Quake Movement Speedrun Modpack
 
 ### Credits
 - mquake - 0x2480 https://mods.sm64coopdx.com/mods/mquake.234/
