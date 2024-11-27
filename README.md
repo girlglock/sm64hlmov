@@ -43,6 +43,4 @@
   - https://github.com/coop-deluxe/sm64coopdx/issues/514
 - It is possible to launch the game like so: `sm64coopdx.exe --skip-intro --skip-update-check --hide-loading-screen --server 6677` (the 6677 is arbitrary)
   - This gets you immediately into the game right on launch, but I'm not sure if it uses a default save slot. Investigation needed if this can be run-legal.
-- mQuake is distributed as compiled Lua code. I'm not sure what the rationale for this seems to be. There is a decomp here:
-  - https://github.com/coop-deluxe/sm64coopdx/commit/57af112f3700eee1b197bb4abe84b10a2cc9aea5
 - Shout out to Jeepy (twitch.tv/jeepy) who found mQuake and silently routed it for months to turn it into a real speedrun!
