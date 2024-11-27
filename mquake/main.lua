@@ -2,6 +2,3 @@
 -- incompatible: moveset 
 -- description: 
 -- deluxe: true
-
--- Disable autostrafe
-gFirstPersonCamera.centerL = false

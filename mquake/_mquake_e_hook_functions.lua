@@ -351,6 +351,22 @@ function on_object_render(o)
 		end
 	end
 end
+
+function create_default_sm64hlmov_config()
+	mod_storage_save_bool("default.ss",false) -- sticky slope
+	mod_storage_save_bool("default.gp",true) -- ground pound
+	mod_storage_save_bool("default.wj",true) -- wall jump
+	mod_storage_save_bool("default.i",true) -- interact
+	mod_storage_save_bool("default.as",false) -- auto strafe
+	mod_storage_save_number("default.j",1.0) -- jump height 
+	mod_storage_save_number("default.f",1.0) -- friction
+	mod_storage_save_number("default.s",1.0) -- speed
+	mod_storage_save_number("default.aa",10) -- air acceleration
+	mod_storage_save_number("default.a",10) -- accelerate
+	mod_storage_save_number("default.ac",30) -- air clamp
+	mod_storage_save_number("default.g",800) -- gravity
+end
+
 local modLoad = false
 function on_level_init()
 	gFirstPersonCamera.offset.y = sv_camerayoffset
@@ -378,6 +394,40 @@ function on_level_init()
 	
 	if (not modLoad and network_is_server()) then
         djui_chat_message_create("\\#A0FFE0\\Please check the server settings with '/mq_server list'.")
+		-- Create a default profile with sm64hlmov settings if it doesn't exist already
+		if (mod_storage_load_number("default.s") == nil) then
+			create_default_sm64hlmov_config()
+		end
+
+		-- Load default profile
+		if (mod_storage_load_number("default.s") ~= nil) then	
+			gGlobalSyncTable.Convar_Gravity = mod_storage_load_number("default.g")
+			gGlobalSyncTable.Convar_Accelerate = mod_storage_load_number("default.a")
+			gGlobalSyncTable.Convar_AirAccelerate = mod_storage_load_number("default.aa")
+			gGlobalSyncTable.Convar_AirClamp = mod_storage_load_number("default.ac")
+			gGlobalSyncTable.Convar_PlayerSpeed = mod_storage_load_number("default.s")
+			gGlobalSyncTable.Convar_PlayerFriction = mod_storage_load_number("default.f")
+			gGlobalSyncTable.Convar_PlayerJumpHeight = mod_storage_load_number("default.j")
+			gGlobalSyncTable.Convar_PlayerAllow_GroundPound = mod_storage_load_bool("default.gp")
+			gGlobalSyncTable.Convar_PlayerAllow_WallJump = mod_storage_load_bool("default.wj")
+			gGlobalSyncTable.Convar_PlayerAllow_Interact = mod_storage_load_bool("default.i")
+			gGlobalSyncTable.Convar_StickySlope = mod_storage_load_bool("default.ss")
+			gFirstPersonCamera.centerL = mod_storage_load_bool("default.as")
+			djui_chat_message_create("\\#A0FFE0\\Loaded default profile")
+			djui_chat_message_create("\\#A0FFE0\\MQ Gravity: " .. gGlobalSyncTable.Convar_Gravity)
+			djui_chat_message_create("\\#A0FFE0\\MQ Accelerate: " .. gGlobalSyncTable.Convar_Accelerate)
+			djui_chat_message_create("\\#A0FFE0\\MQ Air Accelerate: " .. gGlobalSyncTable.Convar_AirAccelerate)
+			djui_chat_message_create("\\#A0FFE0\\MQ Air Clamp: " .. gGlobalSyncTable.Convar_AirClamp)
+			djui_chat_message_create("\\#A0FFE0\\MQ Player Speed: " .. gGlobalSyncTable.Convar_PlayerSpeed)
+			djui_chat_message_create("\\#A0FFE0\\MQ Player Friction: " .. gGlobalSyncTable.Convar_PlayerFriction)
+			djui_chat_message_create("\\#A0FFE0\\MQ Jump Height: " .. gGlobalSyncTable.Convar_PlayerJumpHeight)
+			djui_chat_message_create("\\#A0FFE0\\MQ Auto Strafe: " .. tostring(gFirstPersonCamera.centerL))
+			-- We don't care so much about these
+			-- djui_chat_message_create("\\#A0FFE0\\MQ Ground Pound: " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_GroundPound))
+			-- djui_chat_message_create("\\#A0FFE0\\MQ Wall Jump: " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_WallJump))
+			-- djui_chat_message_create("\\#A0FFE0\\MQ Interact: " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_Interact))
+			-- djui_chat_message_create("\\#A0FFE0\\MQ Sticky Slope: " .. tostring(gGlobalSyncTable.Convar_StickySlope))
+		end
 	end
 	
 	modLoad = true
@@ -571,6 +621,7 @@ if (network_is_server()) then
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server Interact [on/off]'\\#FFFFFF\\ - Default is on")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server SaveConfig [name]'\\#FFFFFF\\ - Save the current server settings to mod storage ")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server LoadConfig [name]'\\#FFFFFF\\ - Load settings from mod storage")
+			djui_chat_message_create("\\#A0FFE0\\'/mq_server DeleteConfig [name]'\\#FFFFFF\\ - Delete settings from mod storage")
 			return true	
 		end
 		
@@ -657,6 +708,16 @@ if (network_is_server()) then
 				gGlobalSyncTable.Convar_PlayerAllow_Interact = mod_storage_load_bool(args[2] .. ".i")
 				gGlobalSyncTable.Convar_StickySlope = mod_storage_load_bool(args[2] .. ".ss")
 				djui_chat_message_create("\\#A0FFE0\\Loaded settings from '" .. args[2] .. "'")
+				return true
+			end
+		end
+
+		if args[1] == "DeleteConfig" and args[2] == "default" then
+			create_default_sm64hlmov_config()
+			return true
+		elseif args[1] == "DeleteConfig" and args[2] ~= nil then
+			if (mod_storage_load_number(args[2] .. ".s") ~= nil) then
+				mod_storage_remove(args[2] .. ".s")
 				return true
 			end
 		end
