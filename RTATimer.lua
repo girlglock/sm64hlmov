@@ -1,5 +1,5 @@
 -- name: RTA Timer
--- description: Simple tick-based timer for RTA runs (based on Mr. Mary's IL Helper)
+-- description: Simple tick-based timer for RTA runs\nDo "/rta_timer reset" to reset timer\n(based on Mr. Mary's IL Helper)
 
 local victory = 0
 local victoryTime = 0
