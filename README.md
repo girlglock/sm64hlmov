@@ -4,6 +4,7 @@
 ### Credits
 - mquake - 0x2480 https://mods.sm64coopdx.com/mods/mquake.234/
 - Half-Life HUD - birdekek https://mods.sm64coopdx.com/mods/hl1-hl2-hud-mod-pack.224/
+- IL Helper - Mr. Mary
 - Half-Life Music - Aeomech (myself)
 - Crowbar - Aeomech (myself)
 
@@ -28,7 +29,7 @@
   - Leave all other settings at default
   - Click Back
   - Click "Mods and Gamemodes"
-  - Enable mQuake
+  - Enable mQuake, IL Run Helper and/or RTA Timer (for full runs)
   - Optionally enable HL1 HUD, Half-Life Crowbar, and Half-Life Music
   - Disable all other mods
   - Click Back
