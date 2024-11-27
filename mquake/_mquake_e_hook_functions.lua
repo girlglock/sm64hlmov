@@ -361,7 +361,7 @@ function create_default_sm64hlmov_config()
 	mod_storage_save_number("default.j",1.0) -- jump height 
 	mod_storage_save_number("default.f",1.0) -- friction
 	mod_storage_save_number("default.s",1.0) -- speed
-	mod_storage_save_number("default.aa",10) -- air acceleration
+	mod_storage_save_number("default.aa",12) -- air acceleration
 	mod_storage_save_number("default.a",10) -- accelerate
 	mod_storage_save_number("default.ac",30) -- air clamp
 	mod_storage_save_number("default.g",800) -- gravity
