@@ -619,6 +619,7 @@ if (network_is_server()) then
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server GroundPound [on/off]'\\#FFFFFF\\ - Default is on")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server WallJump [on/off]'\\#FFFFFF\\ - Default is on")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server Interact [on/off]'\\#FFFFFF\\ - Default is on")
+			djui_chat_message_create("\\#A0FFE0\\'/mq_server AutoStrafe [on/off]'\\#FFFFFF\\ - Default is off")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server SaveConfig [name]'\\#FFFFFF\\ - Save the current server settings to mod storage ")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server LoadConfig [name]'\\#FFFFFF\\ - Load settings from mod storage")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server DeleteConfig [name]'\\#FFFFFF\\ - Delete settings from mod storage")
@@ -634,46 +635,62 @@ if (network_is_server()) then
 		
 		if args[1] == "StickySlope" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_StickySlope = args[2]=="on"
+			djui_chat_message_create("\\#A0FFE0\\StickySlope changed to " .. tostring(gGlobalSyncTable.Convar_StickySlope))
+			return true
+		end
+		if args[1] == "AutoStrafe" and args[2] ~= nil then
+			gFirstPersonCamera.centerL = args[2]=="on"
+			djui_chat_message_create("\\#A0FFE0\\AutoStrafe changed to " .. tostring(gFirstPersonCamera.centerL))
 			return true
 		end
 		if args[1] == "Accelerate" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_Accelerate = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\Accelerate changed to " .. gGlobalSyncTable.Convar_Accelerate)
 			return true
 		end
 		if args[1] == "AirAccelerate" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_AirAccelerate = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\AirAccelerate changed to " .. gGlobalSyncTable.Convar_AirAccelerate)
 			return true
 		end
 		if args[1] == "AirClamp" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_AirClamp = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\AirClamp changed to " .. gGlobalSyncTable.Convar_AirClamp)
 			return true
 		end
 		if args[1] == "Gravity" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_Gravity = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\Gravity changed to " .. gGlobalSyncTable.Convar_Gravity)
 			return true
 		end
 		if args[1] == "PlayerSpeed" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerSpeed = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\PlayerSpeed changed to " .. gGlobalSyncTable.Convar_PlayerSpeed)
 			return true
 		end
 		if args[1] == "PlayerFriction" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerFriction = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\PlayerFriction changed to " .. gGlobalSyncTable.Convar_PlayerFriction)
 			return true
 		end
 		if args[1] == "PlayerJumpHeight" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerJumpHeight = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\PlayerJumpHeight changed to " .. gGlobalSyncTable.Convar_PlayerJumpHeight)
 			return true
 		end
 		if args[1] == "GroundPound" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerAllow_GroundPound = args[2]=="on"
+			djui_chat_message_create("\\#A0FFE0\\GroundPound changed to " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_GroundPound))
 			return true
 		end
 		if args[1] == "WallJump" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerAllow_WallJump = args[2]=="on"
+			djui_chat_message_create("\\#A0FFE0\\WallJump changed to " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_WallJump))
 			return true
 		end
 		if args[1] == "Interact" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerAllow_Interact = args[2]=="on"
+			djui_chat_message_create("\\#A0FFE0\\Interact changed to " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_Interact))
 			return true
 		end
 		
@@ -689,6 +706,7 @@ if (network_is_server()) then
 			mod_storage_save_number(args[2] .. ".a",gGlobalSyncTable.Convar_Accelerate)
 			mod_storage_save_number(args[2] .. ".ac",gGlobalSyncTable.Convar_AirClamp)
 			mod_storage_save_number(args[2] .. ".g",gGlobalSyncTable.Convar_Gravity)
+			mod_storage_save_number(args[2] .. ".as",gFirstPersonCamera.centerL)
 			djui_chat_message_create("\\#A0FFE0\\Saved settings to '" .. args[2] .. "'")
 			return true
 		end
@@ -707,6 +725,7 @@ if (network_is_server()) then
 				gGlobalSyncTable.Convar_PlayerAllow_WallJump = mod_storage_load_bool(args[2] .. ".wj")
 				gGlobalSyncTable.Convar_PlayerAllow_Interact = mod_storage_load_bool(args[2] .. ".i")
 				gGlobalSyncTable.Convar_StickySlope = mod_storage_load_bool(args[2] .. ".ss")
+				gFirstPersonCamera.centerL = mod_storage_load_bool(args[2] .. ".as")
 				djui_chat_message_create("\\#A0FFE0\\Loaded settings from '" .. args[2] .. "'")
 				return true
 			end
@@ -714,10 +733,15 @@ if (network_is_server()) then
 
 		if args[1] == "DeleteConfig" and args[2] == "default" then
 			create_default_sm64hlmov_config()
+			djui_chat_message_create("\\#A0FFE0\\Restored default config")
 			return true
 		elseif args[1] == "DeleteConfig" and args[2] ~= nil then
 			if (mod_storage_load_number(args[2] .. ".s") ~= nil) then
 				mod_storage_remove(args[2] .. ".s")
+				djui_chat_message_create("\\#A0FFE0\\Deleted config '" .. args[2] .. "'")
+				return true
+			else
+				djui_chat_message_create("\\#A0FFE0\\No config found '" .. args[2] .. "'")
 				return true
 			end
 		end
