@@ -415,7 +415,7 @@ function on_level_init()
 	if (not modLoad and network_is_server()) then
         djui_chat_message_create("\\#A0FFE0\\Please check the server settings with '/mq_server list'.")
 		-- Create a default profile with sm64hlmov settings if it doesn't exist already
-		if (mod_storage_load_number("default.s") == nil) then
+		if (mod_storage_load_number("default.s") == nil or mod_storage_load_number("default.s") == 0.0) then
 			create_default_sm64hlmov_config()
 		end
 
