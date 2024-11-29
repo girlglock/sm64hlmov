@@ -1,6 +1,20 @@
 if SM64COOPDX_VERSION == nil then return end
 local is_player_active,vec3f_copy,set_mario_action,perform_air_step,save_file_get_flags,save_file_set_flags,save_file_do_save,get_current_save_file_num,vec3f_dot,get_id_from_behavior,djui_hud_set_color,djui_hud_render_rect,djui_hud_print_text,djui_hud_set_resolution,djui_hud_get_screen_width,djui_hud_get_screen_height,djui_hud_set_font,vec3f_length,math_floor,djui_hud_measure_text,get_cutscene_from_mario_status,obj_get_first,obj_get_next,obj_get_nearest_object_with_behavior_id,obj_check_hitbox_overlap = is_player_active,vec3f_copy,set_mario_action,perform_air_step,save_file_get_flags,save_file_set_flags,save_file_do_save,get_current_save_file_num,vec3f_dot,get_id_from_behavior,djui_hud_set_color,djui_hud_render_rect,djui_hud_print_text,djui_hud_set_resolution,djui_hud_get_screen_width,djui_hud_get_screen_height,djui_hud_set_font,vec3f_length,math.floor,djui_hud_measure_text,get_cutscene_from_mario_status,obj_get_first,obj_get_next,obj_get_nearest_object_with_behavior_id,obj_check_hitbox_overlap
 
+function safe_load_number(key, default)
+	if mod_storage_load_number(key) ~= nil then
+		return mod_storage_load_number(key)
+	end
+	return default
+end
+
+function safe_load_bool(key, default)
+	if mod_storage_load_bool(key) ~= nil then
+		return mod_storage_load_bool(key)
+	end
+	return default
+end
+
 function no_dialog_open()
 	return not (get_dialog_id() >= 0 and get_dialog_box_state() < 3)
 end
@@ -365,6 +379,12 @@ function create_default_sm64hlmov_config()
 	mod_storage_save_number("default.a",10) -- accelerate
 	mod_storage_save_number("default.ac",30) -- air clamp
 	mod_storage_save_number("default.g",800) -- gravity
+	mod_storage_save_number("default.efm",1.5) -- edge friction multiplier
+	mod_storage_save_number("default.efgo",10) -- edge friction ground offset
+	mod_storage_save_number("default.effcd",100) -- edge friction forward check distance
+	mod_storage_save_number("default.efdcd",50) -- edge friction downwards check distance
+	mod_storage_save_bool("default.eb",true) -- e-brake
+	mod_storage_save_number("default.ebm",50.0) -- e-brake multiplier
 end
 
 local modLoad = false
@@ -401,26 +421,33 @@ function on_level_init()
 
 		-- Load default profile
 		if (mod_storage_load_number("default.s") ~= nil) then	
-			gGlobalSyncTable.Convar_Gravity = mod_storage_load_number("default.g")
-			gGlobalSyncTable.Convar_Accelerate = mod_storage_load_number("default.a")
-			gGlobalSyncTable.Convar_AirAccelerate = mod_storage_load_number("default.aa")
-			gGlobalSyncTable.Convar_AirClamp = mod_storage_load_number("default.ac")
-			gGlobalSyncTable.Convar_PlayerSpeed = mod_storage_load_number("default.s")
-			gGlobalSyncTable.Convar_PlayerFriction = mod_storage_load_number("default.f")
-			gGlobalSyncTable.Convar_PlayerJumpHeight = mod_storage_load_number("default.j")
-			gGlobalSyncTable.Convar_PlayerAllow_GroundPound = mod_storage_load_bool("default.gp")
-			gGlobalSyncTable.Convar_PlayerAllow_WallJump = mod_storage_load_bool("default.wj")
-			gGlobalSyncTable.Convar_PlayerAllow_Interact = mod_storage_load_bool("default.i")
-			gGlobalSyncTable.Convar_StickySlope = mod_storage_load_bool("default.ss")
-			gFirstPersonCamera.centerL = mod_storage_load_bool("default.as")
+			gGlobalSyncTable.Convar_Gravity = safe_load_number("default.g", 800)
+			gGlobalSyncTable.Convar_Accelerate = safe_load_number("default.a", 10)
+			gGlobalSyncTable.Convar_AirAccelerate = safe_load_number("default.aa", 12)
+			gGlobalSyncTable.Convar_AirClamp = safe_load_number("default.ac", 30)
+			gGlobalSyncTable.Convar_PlayerSpeed = safe_load_number("default.s", 1.0)
+			gGlobalSyncTable.Convar_PlayerFriction = safe_load_number("default.f", 1.0)
+			gGlobalSyncTable.Convar_PlayerJumpHeight = safe_load_number("default.j", 1.0)
+			gGlobalSyncTable.Convar_PlayerAllow_GroundPound = safe_load_bool("default.gp", true)
+			gGlobalSyncTable.Convar_PlayerAllow_WallJump = safe_load_bool("default.wj", true)
+			gGlobalSyncTable.Convar_PlayerAllow_Interact = safe_load_bool("default.i", true)
+			gGlobalSyncTable.Convar_StickySlope = safe_load_bool("default.ss", false)
+			gFirstPersonCamera.centerL = safe_load_bool("default.as", false)
+			gGlobalSyncTable.Convar_EdgeFrictionMultiplier = safe_load_number("default.efm", 1.5)
+			gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = safe_load_number("default.efgo", 10)
+			gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = safe_load_number("default.effcd", 100)
+			gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = safe_load_number("default.efdcd", 50)
 			djui_chat_message_create("\\#A0FFE0\\Loaded default profile")
+			-- Printed in order of least to most important since we can only really print a couple visible lines here
+			djui_chat_message_create("\\#A0FFE0\\MQ Edge Friction Multiplier: " .. gGlobalSyncTable.Convar_EdgeFrictionMultiplier)
+			djui_chat_message_create("\\#A0FFE0\\MQ EBrake Enabled: " .. tostring(gGlobalSyncTable.Convar_EBrakeEnabled))
+			djui_chat_message_create("\\#A0FFE0\\MQ Air Clamp: " .. gGlobalSyncTable.Convar_AirClamp)
+			djui_chat_message_create("\\#A0FFE0\\MQ Jump Height: " .. gGlobalSyncTable.Convar_PlayerJumpHeight)
 			djui_chat_message_create("\\#A0FFE0\\MQ Gravity: " .. gGlobalSyncTable.Convar_Gravity)
 			djui_chat_message_create("\\#A0FFE0\\MQ Accelerate: " .. gGlobalSyncTable.Convar_Accelerate)
 			djui_chat_message_create("\\#A0FFE0\\MQ Air Accelerate: " .. gGlobalSyncTable.Convar_AirAccelerate)
-			djui_chat_message_create("\\#A0FFE0\\MQ Air Clamp: " .. gGlobalSyncTable.Convar_AirClamp)
 			djui_chat_message_create("\\#A0FFE0\\MQ Player Speed: " .. gGlobalSyncTable.Convar_PlayerSpeed)
 			djui_chat_message_create("\\#A0FFE0\\MQ Player Friction: " .. gGlobalSyncTable.Convar_PlayerFriction)
-			djui_chat_message_create("\\#A0FFE0\\MQ Jump Height: " .. gGlobalSyncTable.Convar_PlayerJumpHeight)
 			djui_chat_message_create("\\#A0FFE0\\MQ Auto Strafe: " .. tostring(gFirstPersonCamera.centerL))
 			-- We don't care so much about these
 			-- djui_chat_message_create("\\#A0FFE0\\MQ Ground Pound: " .. tostring(gGlobalSyncTable.Convar_PlayerAllow_GroundPound))
@@ -615,7 +642,10 @@ if (network_is_server()) then
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server Gravity [value]'\\#FFFFFF\\ - Default is 800")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server PlayerSpeed [value]'\\#FFFFFF\\ - Default is 1.0")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server PlayerFriction [value]'\\#FFFFFF\\ - Default is 1.0")
+			djui_chat_message_create("\\#A0FFE0\\'/mq_server EdgeFrictionMultiplier [value]'\\#FFFFFF\\ - Default is 1.5")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server PlayerJumpHeight [value]'\\#FFFFFF\\ - Default is 1.0")
+			djui_chat_message_create("\\#A0FFE0\\'/mq_server EBrake [on/off]'\\#FFFFFF\\ - Default is on")
+			djui_chat_message_create("\\#A0FFE0\\'/mq_server EBrakeFrictionMultiplier [value]'\\#FFFFFF\\ - Default is 2.0")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server GroundPound [on/off]'\\#FFFFFF\\ - Default is on")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server WallJump [on/off]'\\#FFFFFF\\ - Default is on")
 			djui_chat_message_create("\\#A0FFE0\\'/mq_server Interact [on/off]'\\#FFFFFF\\ - Default is on")
@@ -673,6 +703,36 @@ if (network_is_server()) then
 			djui_chat_message_create("\\#A0FFE0\\PlayerFriction changed to " .. gGlobalSyncTable.Convar_PlayerFriction)
 			return true
 		end
+		if args[1] == "EdgeFrictionMultiplier" and args[2] ~= nil then
+			gGlobalSyncTable.Convar_EdgeFrictionMultiplier = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\EdgeFrictionMultiplier changed to " .. gGlobalSyncTable.Convar_EdgeFrictionMultiplier)
+			return true
+		end
+		if args[1] == "EdgeFrictionGroundOffset" and args[2] ~= nil then
+			gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\EdgeFrictionGroundOffset changed to " .. gGlobalSyncTable.Convar_EdgeFrictionGroundOffset)
+			return true
+		end
+		if args[1] == "EdgeFrictionForwardCheckDistance" and args[2] ~= nil then
+			gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\EdgeFrictionForwardCheckDistance changed to " .. gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance)
+			return true
+		end
+		if args[1] == "EdgeFrictionDownCheckDistance" and args[2] ~= nil then
+			gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\EdgeFrictionDownCheckDistance changed to " .. gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance)
+			return true
+		end
+		if args[1] == "EBrake" and args[2] ~= nil then
+			gGlobalSyncTable.Convar_EBrakeEnabled = args[2]=="on"
+			djui_chat_message_create("\\#A0FFE0\\EBrakeEnabled changed to " .. tostring(gGlobalSyncTable.Convar_EdgeFrictionMultiplier))
+			return true
+		end
+		if args[1] == "EBrakeFrictionMultiplier" and args[2] ~= nil then
+			gGlobalSyncTable.Convar_EBrakeFrictionMultiplier = tonumber(args[2])
+			djui_chat_message_create("\\#A0FFE0\\EBrakeFrictionMultiplier changed to " .. gGlobalSyncTable.Convar_EBrakeFrictionMultiplier)
+			return true
+		end
 		if args[1] == "PlayerJumpHeight" and args[2] ~= nil then
 			gGlobalSyncTable.Convar_PlayerJumpHeight = tonumber(args[2])
 			djui_chat_message_create("\\#A0FFE0\\PlayerJumpHeight changed to " .. gGlobalSyncTable.Convar_PlayerJumpHeight)
@@ -707,25 +767,36 @@ if (network_is_server()) then
 			mod_storage_save_number(args[2] .. ".ac",gGlobalSyncTable.Convar_AirClamp)
 			mod_storage_save_number(args[2] .. ".g",gGlobalSyncTable.Convar_Gravity)
 			mod_storage_save_number(args[2] .. ".as",gFirstPersonCamera.centerL)
+			mod_storage_save_number(args[2] .. ".efm",gGlobalSyncTable.Convar_EdgeFrictionMultiplier)
+			mod_storage_save_number(args[2] .. ".efgo",gGlobalSyncTable.Convar_EdgeFrictionGroundOffset)
+			mod_storage_save_number(args[2] .. ".effcd",gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance)
+			mod_storage_save_number(args[2] .. ".efdcd",gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance)
+			mod_storage_save_bool(args[2] .. ".eb",gGlobalSyncTable.Convar_EBrakeEnabled)
+			mod_storage_save_number(args[2] .. ".ebm",gGlobalSyncTable.Convar_EBrakeFrictionMultiplier)
 			djui_chat_message_create("\\#A0FFE0\\Saved settings to '" .. args[2] .. "'")
 			return true
 		end
 		
 		if args[1] == "LoadConfig" and args[2] ~= nil then
 			if (mod_storage_load_number(args[2] .. ".s") ~= nil) then
-			
-				gGlobalSyncTable.Convar_Gravity = mod_storage_load_number(args[2] .. ".g")
-				gGlobalSyncTable.Convar_Accelerate = mod_storage_load_number(args[2] .. ".a")
-				gGlobalSyncTable.Convar_AirAccelerate = mod_storage_load_number(args[2] .. ".aa")
-				gGlobalSyncTable.Convar_AirClamp = mod_storage_load_number(args[2] .. ".ac")
-				gGlobalSyncTable.Convar_PlayerSpeed = mod_storage_load_number(args[2] .. ".s")
-				gGlobalSyncTable.Convar_PlayerFriction = mod_storage_load_number(args[2] .. ".f")
-				gGlobalSyncTable.Convar_PlayerJumpHeight = mod_storage_load_number(args[2] .. ".j")
-				gGlobalSyncTable.Convar_PlayerAllow_GroundPound = mod_storage_load_bool(args[2] .. ".gp")
-				gGlobalSyncTable.Convar_PlayerAllow_WallJump = mod_storage_load_bool(args[2] .. ".wj")
-				gGlobalSyncTable.Convar_PlayerAllow_Interact = mod_storage_load_bool(args[2] .. ".i")
-				gGlobalSyncTable.Convar_StickySlope = mod_storage_load_bool(args[2] .. ".ss")
-				gFirstPersonCamera.centerL = mod_storage_load_bool(args[2] .. ".as")
+				gGlobalSyncTable.Convar_Gravity = safe_load_number(args[2] .. ".g", 800)
+				gGlobalSyncTable.Convar_Accelerate = safe_load_number(args[2] .. ".a", 10)
+				gGlobalSyncTable.Convar_AirAccelerate = safe_load_number(args[2] .. ".aa", 12)
+				gGlobalSyncTable.Convar_AirClamp = safe_load_number(args[2] .. ".ac", 30)
+				gGlobalSyncTable.Convar_PlayerSpeed = safe_load_number(args[2] .. ".s", 1.0)
+				gGlobalSyncTable.Convar_PlayerFriction = safe_load_number(args[2] .. ".f", 1.0)
+				gGlobalSyncTable.Convar_PlayerJumpHeight = safe_load_number(args[2] .. ".j", 1.0)
+				gGlobalSyncTable.Convar_PlayerAllow_GroundPound = safe_load_bool(args[2] .. ".gp", true)
+				gGlobalSyncTable.Convar_PlayerAllow_WallJump = safe_load_bool(args[2] .. ".wj", true)
+				gGlobalSyncTable.Convar_PlayerAllow_Interact = safe_load_bool(args[2] .. ".i", true)
+				gGlobalSyncTable.Convar_StickySlope = safe_load_bool(args[2] .. ".ss", false)
+				gFirstPersonCamera.centerL = safe_load_bool(args[2] .. ".as", false)
+				gGlobalSyncTable.Convar_EdgeFrictionMultiplier = safe_load_number(args[2] .. ".efm", 1.5)
+				gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = safe_load_number(args[2] .. ".efgo", 10)
+				gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = safe_load_number(args[2] .. ".effcd", 100)
+				gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = safe_load_number(args[2] .. ".efdcd", 50)
+				gGlobalSyncTable.Convar_EBrakeEnabled = safe_load_bool(args[2] .. ".eb", true)
+				gGlobalSyncTable.Convar_EBrakeFrictionMultiplier = safe_load_number(args[2] .. ".ebm", 50.0)
 				djui_chat_message_create("\\#A0FFE0\\Loaded settings from '" .. args[2] .. "'")
 				return true
 			end

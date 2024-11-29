@@ -147,7 +147,33 @@ function SV_UserFriction(m)
 	if (speed <= 0.00001) then return end
 	local friction = ((sv_friction*phys_friction_scale)+ifelse(gPlayerSyncTable[m.playerIndex].playerCrouching,sv_crouchfriction_scale,0))*SV_GetSurfaceStandableFrictionMultiplier(m.floor.type,m.area.terrainType)
 	local control = nil
+
 	
+	-- E-Brake
+	if (gGlobalSyncTable.Convar_EBrakeEnabled and m.floor ~= nil and m.controller.buttonDown & D_JPAD ~= 0) then
+		friction = friction * gGlobalSyncTable.Convar_EBrakeFrictionMultiplier;
+	-- Edge friction
+	elseif (m.floor ~= nil) then
+		-- Shoot a ray in the direction of forward velocity; we only really want to increase friction if they're going to go _over_ an edge
+		local origin = {x=m.pos.x, y=m.pos.y+gGlobalSyncTable.Convar_EdgeFrictionGroundOffset, z=m.pos.z};
+		local velDir = {x=m.vel.x, y=m.vel.y, z=m.vel.z};
+		vec3f_normalize(velDir);
+		vec3f_mul(velDir, gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance);
+		local rayInfo = collision_find_surface_on_ray(origin.x, origin.y, origin.z, velDir.x, velDir.y, velDir.z);
+		local rayInfoDist = vec3f_dist(origin, rayInfo.hitPos);
+		if rayInfo.surface == nil then
+			-- No wall in front of us. Check if we're on a ledge
+			local origin2 = {x=origin.x, y=origin.y, z=origin.z};
+			vec3f_add(origin2, velDir)
+			local rayInfo2 = collision_find_surface_on_ray(origin2.x, origin2.y, origin2.z, 0, -gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance, 0);
+			if rayInfo2.surface == nil then
+				-- Didn't hit anything within 50 units down; we're on a ledge
+				friction = friction * gGlobalSyncTable.Convar_EdgeFrictionMultiplier; -- increase friction on edges
+			end
+		end
+	end
+
+
 	if (speed <= sv_stopspeed) then
 		control = sv_stopspeed
 	else 

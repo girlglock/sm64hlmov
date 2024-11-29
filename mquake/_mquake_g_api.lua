@@ -20,6 +20,13 @@ local function sv_set_allow_groundpound(v) gGlobalSyncTable.Convar_PlayerAllow_G
 local function sv_set_allow_walljump(v) gGlobalSyncTable.Convar_PlayerAllow_WallJump = v end
 local function sv_set_allow_interact(v) gGlobalSyncTable.Convar_PlayerAllow_Interact = v end
 
+local function sv_set_allow_autostrafe(v) gFirstPersonCamera.centerL = v end
+
+local function sv_set_edgefriction_multiplier(v) gGlobalSyncTable.Convar_EdgeFrictionMultiplier = v end
+local function sv_set_edgefriction_groundoffset(v) gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = v end
+local function sv_set_edgefriction_forwardcheckdistance(v) gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = v end
+local function sv_set_edgefriction_downcheckdistance(v) gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = v end
+
 local function cl_set_allow_action(a,o) 
 	DM_ACTIONS[tonumber(a)] = o
 end
