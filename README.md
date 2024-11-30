@@ -43,7 +43,7 @@
 - If you have a non-sm64hlmov custom copy of mQuake, you will need to delete it entirely when installing this version of mQuake; this is because sm64coopdx will preferentially use the compiled luac files over the lua source files distributed with this version.
 - No scripts or autohotkeys are allowed in the run. Auto hopping is allowed and enabled by default in mQuake.
 - Use `/mq_server DeleteConfig default` to restore the default run-legal configuration.
-- Edge friction is by default set at 1.5x. Any multiplier between 1.0 (disabled) and 2.0 (double friction near edges) should be fine and can be set like so: `/mq_server EdgeFrictionMultiplier 1.0`
+- Edge friction is by default set at 1.3x. Any multiplier between 1.0 (disabled) and 2.0 (double friction near edges) should be fine and can be set like so: `/mq_server EdgeFrictionMultiplier 1.0`
 - Dpad Down is a brake/walk button similar to holding 'E' in Half-Life.
 - The Discord authorize thing is annoying and there's no launch flag (yet) to turn it off. However, the perms it asks for are relatively innocuous, and it'll stop asking after you authorize it.
   - https://github.com/coop-deluxe/sm64coopdx/issues/514
