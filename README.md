@@ -26,10 +26,11 @@
   - Click Host
   - Click Settings
   - Check "Skip Intro Cutscene"
+  - Set "On Star Collection" to "Stay in Level"
   - Leave all other settings at default
   - Click Back
   - Click "Mods and Gamemodes"
-  - Enable mQuake, IL Run Helper and/or MariomodXT (for full runs)
+  - Enable mQuake, IL Run Helper (for single level runs) and/or MariomodXT (for full runs)
   - Optionally enable HL1 HUD, Half-Life Crowbar, and Half-Life Music
   - Disable all other mods
   - Click Back
@@ -39,12 +40,11 @@
   - You will likely also want to set up your key binds to be more like Half-Life. This can be done under Options -> N64 Binds.
 
 ### Misc Notes
+- If you have a non-sm64hlmov custom copy of mQuake, you will need to delete it entirely when installing this version of mQuake; this is because sm64coopdx will preferentially use the compiled luac files over the lua source files distributed with this version.
 - No scripts or autohotkeys are allowed in the run. Auto hopping is allowed and enabled by default in mQuake.
 - Use `/mq_server DeleteConfig default` to restore the default run-legal configuration.
-- Edge friction is by default set at 1.5x. Any multiplier between 1.0 (disabled) and 2.0 (double friction near edges) is legal and can be set like so: `/mq_server EdgeFrictionMultiplier 1.0`
+- Edge friction is by default set at 1.5x. Any multiplier between 1.0 (disabled) and 2.0 (double friction near edges) should be fine and can be set like so: `/mq_server EdgeFrictionMultiplier 1.0`
 - Dpad Down is a brake/walk button similar to holding 'E' in Half-Life.
 - The Discord authorize thing is annoying and there's no launch flag (yet) to turn it off. However, the perms it asks for are relatively innocuous, and it'll stop asking after you authorize it.
   - https://github.com/coop-deluxe/sm64coopdx/issues/514
-- It is possible to launch the game like so: `sm64coopdx.exe --skip-intro --skip-update-check --hide-loading-screen --server 6677` (the 6677 is arbitrary)
-  - This gets you immediately into the game right on launch, but I'm not sure if it uses a default save slot. Investigation needed if this can be run-legal.
 - Shout out to Jeepy (twitch.tv/jeepy) who found mQuake and silently routed it for months to turn it into a real speedrun!
