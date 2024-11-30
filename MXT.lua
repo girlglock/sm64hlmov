@@ -1,7 +1,8 @@
 -- name: MariomodXT
 -- description: On-screen timer for full game runs with splits and reset functionality\nby Mr. Mary
-
 version = "RC1"
+
+mQuake_aa = 12
 
 startTime = get_global_timer()
 storedTime = 100
@@ -49,6 +50,15 @@ pbStats = {0, {}}
 deviatedRoute = false
 newBest = false
 
+local function setAA()
+    if _G.mQuake_API.version then
+        if _G.mQuake_API.server.get.airaccelerate() ~= 12 then
+            _G.mQuake_API.server.set.airaccelerate(mQuake_aa)
+            djui_popup_create("mQuake detected - setting AA to " .. tostring(mQuake_aa), 1)
+        end
+    end
+end
+
 local function serializeInt(t, n)
     local vars = {0, 0, 0, 0}  -- Initialize 4 variables to store the serialized values
 
@@ -88,6 +98,7 @@ local function initSplits()
         for i = 1, #levels do 
             splits[levels[i][1]][3] = 0
             mod_storage_save_number("besttime_" .. tostring(levels[i]), splits[levels[i][1]][3])
+            mod_storage_save_number("level_" .. tostring(i), 0)
         end
         mod_storage_save_bool("initSetupDone", true)
     else
@@ -99,7 +110,10 @@ local function initSplits()
     if mod_storage_load_bool("pbRecorded") then
         pbStats[1] = mod_storage_load_number("bestTime")
         levelOrder = mod_storage_load("levelOrder")
-        pbStats[2] = deserializeInt(mod_storage_load_number("levelOrder_1"), mod_storage_load_number("levelOrder_2"), mod_storage_load_number("levelOrder_3") , mod_storage_load_number("levelOrder_4"), mod_storage_load_number("levelAmount"))
+        for i = 1, #levels do
+            table.insert(pbStats[2], mod_storage_load_number("level_" .. tostring(i)))
+        end
+        --pbStats[2] = deserializeInt(mod_storage_load_number("levelOrder_1"), mod_storage_load_number("levelOrder_2"), mod_storage_load_number("levelOrder_3") , mod_storage_load_number("levelOrder_4"), mod_storage_load_number("levelAmount"))
     end
 end
 initSplits()
@@ -181,6 +195,7 @@ local function nukeSave()
     save_file_erase_current_backup_save()
     save_file_reload(saveSlot)
     warp_to_level(LEVEL_CASTLE_GROUNDS,1,0)
+    gFirstPersonCamera.pitch = 0
     startTime = get_global_timer()
     --djui_popup_create("I am DarkViperAU and the run is dead", 1)
     resetPresses = 0
@@ -192,6 +207,7 @@ local function nukeSave()
     resetPopupWarnings()
     resetCurrentSplits()
     initSplits()
+    setAA()
 end
 
 local function nukeTimes()
@@ -221,6 +237,8 @@ local function reset(m)
            secondWarning[2] = true
         elseif get_global_timer() - storedTime > 90 then
             nukeSave()
+            m.health = 0x0880
+            m.numLives = 4
         end
     end
 end
@@ -247,9 +265,11 @@ local function trackSplit()
                         splitString = "Entering " .. levels[i][2] .. " at " .. splitString
                     else
                         splitString = "Entering " .. levels[i][2] .. " at " .. splitString
-                        djui_popup_create("\\#FE0000\\Route deviation - ignoring best times", 1)
-                        deviatedRoute = true
-                        nukeTimes()
+                        if not deviatedRoute then
+                            djui_popup_create("\\#FE0000\\Route deviation - ignoring best times", 1)
+                            deviatedRoute = true
+                            nukeTimes()
+                        end
                         print("Route deviation on split")
                     end
                 elseif expected then
@@ -361,8 +381,11 @@ local function saveRun(msg)
     callFromChat = msg and (runDone and deviatedRoute)
     if (not msg) or (callFromChat) then
         mod_storage_save_bool("pbRecorded", true)
-        for i = 1, 4 do
+--[[         for i = 1, 4 do
             mod_storage_save_number("levelOrder_" .. tostring(i), serializeInt(entered, i))
+        end ]]
+        for i = 1, #entered do
+            mod_storage_save_number("level_" .. tostring(i), entered[i])
         end
         mod_storage_save_number("levelAmount", #entered)
         mod_storage_save_number("bestTime", finalTime)
@@ -424,7 +447,9 @@ end
 hook_event(HOOK_ON_INTERACT, starAction)
 hook_event(HOOK_MARIO_UPDATE, reset)
 hook_event(HOOK_ON_LEVEL_INIT, trackSplit)
+hook_event(HOOK_ON_LEVEL_INIT, setAA)
 hook_event(HOOK_ON_HUD_RENDER, drawTimer)
+--hook_chat_command("bowser3", " - wipe the current savefile and reset to Castle Grounds", bowser3)
 hook_chat_command("mxt_save_run", " - save currently finished run", saveRun)
 hook_chat_command("mxt_best_time", " - print best recorded time", printTime)
 djui_popup_create("MariomodXT v" .. version .. " loaded!", 1)
