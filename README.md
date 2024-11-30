@@ -41,6 +41,8 @@
 ### Misc Notes
 - No scripts or autohotkeys are allowed in the run. Auto hopping is allowed and enabled by default in mQuake.
 - Use `/mq_server DeleteConfig default` to restore the default run-legal configuration.
+- Edge friction is by default set at 1.5x. Any multiplier between 1.0 (disabled) and 2.0 (double friction near edges) is legal and can be set like so: `/mq_server EdgeFrictionMultiplier 1.0`
+- Dpad Down is a brake/walk button similar to holding 'E' in Half-Life.
 - The Discord authorize thing is annoying and there's no launch flag (yet) to turn it off. However, the perms it asks for are relatively innocuous, and it'll stop asking after you authorize it.
   - https://github.com/coop-deluxe/sm64coopdx/issues/514
 - It is possible to launch the game like so: `sm64coopdx.exe --skip-intro --skip-update-check --hide-loading-screen --server 6677` (the 6677 is arbitrary)
