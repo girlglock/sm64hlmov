@@ -34,7 +34,7 @@
   - Optionally enable HL1 HUD, Half-Life Crowbar, and Half-Life Music
   - Disable all other mods
   - Click Back
-  - Under Save Slot you may pick and and erase save slots; all runs must start with an empty save slot.
+  - With MariomodXT enabled, press DPAD Up to start a run.
   - Click Host, then click Host again. The game should start.
   - The settings should persist, so after this you just need to erase your save and click Host -> Host for new runs.
   - You will likely also want to set up your key binds to be more like Half-Life. This can be done under Options -> N64 Binds.
