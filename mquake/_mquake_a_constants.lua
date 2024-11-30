@@ -35,7 +35,7 @@ if (network_is_server()) then
 
 	gGlobalSyncTable.Convar_EdgeFrictionMultiplier = 1.3
 	gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = 10
-	gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = 80
+	gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = 50
 	gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = 50
 
 	gGlobalSyncTable.Convar_EBrakeEnabled = true

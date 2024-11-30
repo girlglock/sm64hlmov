@@ -381,7 +381,7 @@ function create_default_sm64hlmov_config()
 	mod_storage_save_number("default.g",800) -- gravity
 	mod_storage_save_number("default.efm",1.3) -- edge friction multiplier
 	mod_storage_save_number("default.efgo",10) -- edge friction ground offset
-	mod_storage_save_number("default.effcd",80) -- edge friction forward check distance
+	mod_storage_save_number("default.effcd",50) -- edge friction forward check distance
 	mod_storage_save_number("default.efdcd",50) -- edge friction downwards check distance
 	mod_storage_save_bool("default.eb",true) -- e-brake
 	mod_storage_save_number("default.ebm",50.0) -- e-brake multiplier
@@ -435,7 +435,7 @@ function on_level_init()
 			gFirstPersonCamera.centerL = safe_load_bool("default.as", false)
 			gGlobalSyncTable.Convar_EdgeFrictionMultiplier = safe_load_number("default.efm", 1.3)
 			gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = safe_load_number("default.efgo", 10)
-			gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = safe_load_number("default.effcd", 80)
+			gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = safe_load_number("default.effcd", 50)
 			gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = safe_load_number("default.efdcd", 50)
 			djui_chat_message_create("\\#A0FFE0\\Loaded default profile")
 			-- Printed in order of least to most important since we can only really print a couple visible lines here
@@ -793,7 +793,7 @@ if (network_is_server()) then
 				gFirstPersonCamera.centerL = safe_load_bool(args[2] .. ".as", false)
 				gGlobalSyncTable.Convar_EdgeFrictionMultiplier = safe_load_number(args[2] .. ".efm", 1.3)
 				gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = safe_load_number(args[2] .. ".efgo", 10)
-				gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = safe_load_number(args[2] .. ".effcd", 80)
+				gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = safe_load_number(args[2] .. ".effcd", 50)
 				gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = safe_load_number(args[2] .. ".efdcd", 50)
 				gGlobalSyncTable.Convar_EBrakeEnabled = safe_load_bool(args[2] .. ".eb", true)
 				gGlobalSyncTable.Convar_EBrakeFrictionMultiplier = safe_load_number(args[2] .. ".ebm", 50.0)
