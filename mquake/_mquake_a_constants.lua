@@ -39,7 +39,8 @@ DefaultSettings = {
 	interact = true,
 	stickySlope = false,
 	autoHop = true,
-	autoStrafe = false
+	autoStrafe = false,
+	altWallJumpKey = false
 }
 
 if (network_is_server()) then

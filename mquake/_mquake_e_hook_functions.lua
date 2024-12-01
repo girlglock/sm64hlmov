@@ -379,6 +379,7 @@ function create_default_sm64hlmov_config()
 	mod_storage_save_bool("default.as",DefaultSettings.autoStrafe) -- auto strafe
 	mod_storage_save_bool("default.eb",DefaultSettings.ebrake) -- e-brake
 	mod_storage_save_bool("default.ah",DefaultSettings.autoHop) -- auto hop
+	mod_storage_save_bool("default.awjk",DefaultSettings.altWallJumpKey) -- alternate wall jump key
 	mod_storage_save_number("default.j",DefaultSettings.jumpHeight) -- jump height 
 	mod_storage_save_number("default.f",DefaultSettings.friction) -- friction
 	mod_storage_save_number("default.s",DefaultSettings.speed) -- speed
@@ -409,6 +410,7 @@ function load_config(config)
 		gGlobalSyncTable.Convar_PlayerAllow_Interact = safe_load_bool(config .. ".i", DefaultSettings.interact)
 		gGlobalSyncTable.Convar_StickySlope = safe_load_bool(config .. ".ss", DefaultSettings.stickySlope)
 		gFirstPersonCamera.centerL = safe_load_bool(config .. ".as", DefaultSettings.autoStrafe)
+		cl_altWalljumpKey = safe_load_bool(config .. ".awjk", DefaultSettings.altWallJumpKey)
 		gGlobalSyncTable.Convar_PlayerAutoHop = safe_load_bool(config .. ".ah", DefaultSettings.autoHop)
 		gGlobalSyncTable.Convar_EdgeFrictionMultiplier = safe_load_number(config .. ".efm", DefaultSettings.edgeFrictionMultiplier)
 		gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = safe_load_number(config .. ".efgo", DefaultSettings.efGroundOffset)
@@ -438,6 +440,7 @@ function save_config(config)
 	mod_storage_save_bool(config .. ".i",gGlobalSyncTable.Convar_PlayerAllow_Interact) 
 	mod_storage_save_bool(config .. ".ah",gGlobalSyncTable.Convar_PlayerAutoHop)
 	mod_storage_save_bool(config .. ".eb",gGlobalSyncTable.Convar_EBrakeEnabled)
+	mod_storage_save_bool(config .. ".awjk",cl_altWalljumpKey)
 	mod_storage_save_number(config .. ".j",gGlobalSyncTable.Convar_PlayerJumpHeight) 
 	mod_storage_save_number(config .. ".f",gGlobalSyncTable.Convar_PlayerFriction) 
 	mod_storage_save_number(config .. ".s",gGlobalSyncTable.Convar_PlayerSpeed)
