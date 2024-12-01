@@ -20,26 +20,50 @@ gLevelValues.fixVanishFloors = 1
 gServerSettings.stayInLevelAfterStar = 2
 gServerSettings.bubbleDeath = 0
 
+DefaultSettings = {
+	gravity = 800,
+	airAcceleration = 12,
+	airClamp = 30,
+	acceleration = 10,
+	speed = 1.0,
+	friction = 1.0,
+	jumpHeight = 1.0,
+	edgeFrictionMultiplier = 1.3,
+	efGroundOffset = 10,
+	efForwardCheckDistance = 50,
+	efDownCheckDistance = 50,
+	ebrakeFrictionMultiplier = 50,
+	ebrake = true,
+	groundPound = true,
+	wallJump = true,
+	interact = true,
+	stickySlope = false,
+	autoHop = true,
+	autoStrafe = false
+}
+
 if (network_is_server()) then
-	gGlobalSyncTable.Convar_StickySlope = false
-	gGlobalSyncTable.Convar_Gravity = 800
-	gGlobalSyncTable.Convar_AirAccelerate = 10
-	gGlobalSyncTable.Convar_AirClamp = 30
-	gGlobalSyncTable.Convar_Accelerate = 10
-	gGlobalSyncTable.Convar_PlayerSpeed = 1.0
-	gGlobalSyncTable.Convar_PlayerFriction = 1.0
-	gGlobalSyncTable.Convar_PlayerJumpHeight = 1.0
-	gGlobalSyncTable.Convar_PlayerAllow_GroundPound = true
-	gGlobalSyncTable.Convar_PlayerAllow_WallJump = true
-	gGlobalSyncTable.Convar_PlayerAllow_Interact = true
+	gGlobalSyncTable.Convar_StickySlope = DefaultSettings.stickySlope
+	gGlobalSyncTable.Convar_Gravity = DefaultSettings.gravity
+	gGlobalSyncTable.Convar_AirAccelerate = DefaultSettings.airAcceleration
+	gGlobalSyncTable.Convar_AirClamp = DefaultSettings.airClamp
+	gGlobalSyncTable.Convar_Accelerate = DefaultSettings.acceleration
+	gGlobalSyncTable.Convar_PlayerSpeed = DefaultSettings.speed
+	gGlobalSyncTable.Convar_PlayerFriction = DefaultSettings.friction
+	gGlobalSyncTable.Convar_PlayerJumpHeight = DefaultSettings.jumpHeight
+	gGlobalSyncTable.Convar_PlayerAllow_GroundPound = DefaultSettings.groundPound
+	gGlobalSyncTable.Convar_PlayerAllow_WallJump = DefaultSettings.wallJump
+	gGlobalSyncTable.Convar_PlayerAllow_Interact = DefaultSettings.interact
 
-	gGlobalSyncTable.Convar_EdgeFrictionMultiplier = 1.3
-	gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = 10
-	gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = 50
-	gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = 50
+	gGlobalSyncTable.Convar_PlayerAutoHop = DefaultSettings.autoHop
 
-	gGlobalSyncTable.Convar_EBrakeEnabled = true
-	gGlobalSyncTable.Convar_EBrakeFrictionMultiplier = 50.0
+	gGlobalSyncTable.Convar_EdgeFrictionMultiplier = DefaultSettings.edgeFrictionMultiplier
+	gGlobalSyncTable.Convar_EdgeFrictionGroundOffset = DefaultSettings.efGroundOffset
+	gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = DefaultSettings.efForwardCheckDistance
+	gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = DefaultSettings.efDownCheckDistance
+
+	gGlobalSyncTable.Convar_EBrakeEnabled = DefaultSettings.ebrake
+	gGlobalSyncTable.Convar_EBrakeFrictionMultiplier = DefaultSettings.ebrakeFrictionMultiplier
 	
 	sv_sticky = false
 	sv_maxspeed = 180

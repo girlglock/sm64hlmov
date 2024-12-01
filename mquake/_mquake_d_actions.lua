@@ -44,7 +44,7 @@ local function local_act_dm_grounded_movement(m)
 		end
 	end
 	
-	if (m.controller.buttonDown & A_BUTTON) ~= 0 and no_dialog_open() and m.floor ~= nil then
+	if ((gGlobalSyncTable.Convar_PlayerAutoHop and (m.controller.buttonDown & A_BUTTON) ~= 0) or (not gGlobalSyncTable.Convar_PlayerAutoHop and (m.controller.buttonPressed & A_BUTTON) ~= 0)) and no_dialog_open() and m.floor ~= nil then
 		set_character_animation(m, CHAR_ANIM_IDLE_HEAD_CENTER)
 		
 		-- m.controller.buttonPressed = m.controller.buttonPressed & ~A_BUTTON
