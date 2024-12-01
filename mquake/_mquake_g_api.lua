@@ -27,6 +27,14 @@ local function sv_set_edgefriction_groundoffset(v) gGlobalSyncTable.Convar_EdgeF
 local function sv_set_edgefriction_forwardcheckdistance(v) gGlobalSyncTable.Convar_EdgeFrictionForwardCheckDistance = v end
 local function sv_set_edgefriction_downcheckdistance(v) gGlobalSyncTable.Convar_EdgeFrictionDownCheckDistance = v end
 
+local function cl_get_wallkick_limiter() 
+	return cl_airstrafelimiter
+end
+
+local function cl_set_wallkick_limiter(val) 
+	cl_airstrafelimiter = val
+end
+
 local function cl_set_allow_action(a,o) 
 	DM_ACTIONS[tonumber(a)] = o
 end
@@ -104,6 +112,14 @@ local api = {
 			groundpound = sv_set_allow_groundpound,
 			walljump = sv_set_allow_walljump,
 			interact = sv_set_allow_interact
+		}
+	},
+	cl = {  -- Allows modders to access certain client variables
+		get = {  -- Allows modders to get server convars
+			wallkick = cl_get_wallkick_limiter
+		},
+		set = {  -- Allows modders to override server convars
+			wallkick = cl_set_wallkick_limiter
 		}
 	},
 	physics = {  -- Allows modders to access mQuakes physics functions
