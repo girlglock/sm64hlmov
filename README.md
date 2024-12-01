@@ -4,9 +4,8 @@
 ### Credits
 - mquake - 0x2480 https://mods.sm64coopdx.com/mods/mquake.234/
 - Half-Life HUD - birdekek https://mods.sm64coopdx.com/mods/hl1-hl2-hud-mod-pack.224/
-- IL Helper & MariomodXT - Mr. Mary
-- Half-Life Music - Aeomech (myself)
-- Crowbar - Aeomech (myself)
+- IL Helper, MariomodXT, InputViewer - Mr. Mary
+- Crowbar, Half-Life Music - Aeomech (myself)
 
 ### HOW TO DOWNLOAD
 - Click the green "CODE" button
@@ -31,7 +30,7 @@
   - Click Back
   - Click "Mods and Gamemodes"
   - Enable mQuake, IL Run Helper (for single level runs) and/or MariomodXT (for full runs)
-  - Optionally enable HL1 HUD, Half-Life Crowbar, and Half-Life Music
+  - Optionally enable mQuake Input Viewer, HL1 HUD, Half-Life Crowbar, and Half-Life Music
   - Disable all other mods
   - Click Back
   - Click Host, then click Host again. The game should start.
