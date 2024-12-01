@@ -2,7 +2,7 @@
 ## Super Mario 64 with Half-Life/Quake Movement Speedrun Modpack
 
 ### Credits
-- mquake - 0x2480 https://mods.sm64coopdx.com/mods/mquake.234/
+- mquake - 0x2480 aka Vincenza https://mods.sm64coopdx.com/mods/mquake.234/
 - Half-Life HUD - birdekek https://mods.sm64coopdx.com/mods/hl1-hl2-hud-mod-pack.224/
 - IL Helper, MariomodXT, InputViewer - Mr. Mary
 - Crowbar, Half-Life Music, some modifications to mQuake - Aeomech (myself)
