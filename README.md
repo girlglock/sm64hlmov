@@ -5,7 +5,7 @@
 - mquake - 0x2480 https://mods.sm64coopdx.com/mods/mquake.234/
 - Half-Life HUD - birdekek https://mods.sm64coopdx.com/mods/hl1-hl2-hud-mod-pack.224/
 - IL Helper, MariomodXT, InputViewer - Mr. Mary
-- Crowbar, Half-Life Music - Aeomech (myself)
+- Crowbar, Half-Life Music, some modifications to mQuake - Aeomech (myself)
 
 ### HOW TO DOWNLOAD
 - Click the green "CODE" button
