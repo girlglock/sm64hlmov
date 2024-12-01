@@ -50,47 +50,9 @@ pbStats = {0, {}}
 deviatedRoute = false
 newBest = false
 
-local function setAA()
-    if _G.mQuake_API.version then
-        if _G.mQuake_API.server.get.airaccelerate() ~= 12 then
-            _G.mQuake_API.server.set.airaccelerate(mQuake_aa)
-            djui_popup_create("mQuake detected - setting AA to " .. tostring(mQuake_aa), 1)
-        end
-    end
-end
-
-local function serializeInt(t, n)
-    local vars = {0, 0, 0, 0}  -- Initialize 4 variables to store the serialized values
-
-    -- Iterate through the table to pack the values
-    for i, v in ipairs(t) do
-        local var_index = math.floor((i - 1) / 5) + 1  -- Which variable (1 to 4)
-        local shift_amount = ((i - 1) % 5) * 6  -- Bit position in the 32-bit variable
-
-        -- Pack the value into the correct variable using bit shifts
-        vars[var_index] = vars[var_index] + ((v - 4) << shift_amount)
-    end
-
-    -- Return the specific variable (n-th one)
-    return vars[n]
-end
-
-local function deserializeInt(var1, var2, var3, var4, num_elements)
-    local vars = {var1, var2, var3, var4}  -- Collect the 4 variables into a table
-    local t = {}  -- Table to store the deserialized values
-
-    -- Iterate through the elements (based on num_elements)
-    for i = 1, num_elements do
-        local var_index = math.floor((i - 1) / 5) + 1  -- Which variable (1 to 4)
-        local shift_amount = ((i - 1) % 5) * 6  -- Bit position in the 32-bit variable
-        local value = (vars[var_index] >> shift_amount) & 0x3F  -- Extract the 6-bit value
-
-        -- Restore the value to the original range (4 to 37)
-        table.insert(t, value + 4)
-    end
-
-    return t  -- Return the deserialized table
-end
+settings = {
+    inputViewer = false
+}
 
 local function initSplits()
     if not mod_storage_load_bool("initSetupDone") then
@@ -207,7 +169,6 @@ local function nukeSave()
     resetPopupWarnings()
     resetCurrentSplits()
     initSplits()
-    setAA()
 end
 
 local function nukeTimes()
@@ -245,54 +206,56 @@ end
 
 local function trackSplit()
     currentLevel = gNetworkPlayers[0].currLevelNum
-    for i = 1, #levels do
-        if levels[i][1] == currentLevel then
-            if splits[currentLevel][1] == false then
-                splitTime = get_global_timer() - startTime
-                splits[currentLevel][2] = splitTime
-                bestTime = splits[currentLevel][3]
-                deltaTime = splitTime - bestTime
-                table.insert(entered, currentLevel)
-                splitString = formatTime(splitTime, false)
-                expected = entered[#entered] == pbStats[2][#entered]
-                print("entered now " .. tostring(entered[#entered]))
-                print("entered in PB " .. tostring(pbStats[2][#entered]))
+    if not runDone then
+        for i = 1, #levels do
+            if levels[i][1] == currentLevel then
+                if splits[currentLevel][1] == false then
+                    splitTime = get_global_timer() - startTime
+                    splits[currentLevel][2] = splitTime
+                    bestTime = splits[currentLevel][3]
+                    deltaTime = splitTime - bestTime
+                    table.insert(entered, currentLevel)
+                    splitString = formatTime(splitTime, false)
+                    expected = entered[#entered] == pbStats[2][#entered]
+                    print("entered now " .. tostring(entered[#entered]))
+                    print("entered in PB " .. tostring(pbStats[2][#entered]))
 
-                if bestTime == 0 then
-                    if pbStats[1] == 0 then
-                        print("No best time on record")
-                        splits[currentLevel][3] = splitTime
-                        splitString = "Entering " .. levels[i][2] .. " at " .. splitString
+                    if bestTime == 0 then
+                        if pbStats[1] == 0 then
+                            print("No best time on record")
+                            splits[currentLevel][3] = splitTime
+                            splitString = "Entering " .. levels[i][2] .. " at " .. splitString
+                        else
+                            splitString = "Entering " .. levels[i][2] .. " at " .. splitString
+                            if not deviatedRoute then
+                                djui_popup_create("\\#FE0000\\Route deviation - ignoring best times", 1)
+                                deviatedRoute = true
+                                nukeTimes()
+                            end
+                            print("Route deviation on split")
+                        end
+                    elseif expected then
+                        color = "\\#FFFFFF\\"
+                        if deltaTime > 0 then
+                            color = "\\#FE0000\\"
+                        elseif deltaTime < 0 then
+                            color = "\\#21A212\\"
+                        end
+                        splitString = "Entering " .. levels[i][2] .. " at " .. splitString .. " (" .. color .. formatTime(deltaTime, true) .. "\\#FFFFFF\\)"
+                        print("Best time on record")
                     else
                         splitString = "Entering " .. levels[i][2] .. " at " .. splitString
-                        if not deviatedRoute then
-                            djui_popup_create("\\#FE0000\\Route deviation - ignoring best times", 1)
-                            deviatedRoute = true
-                            nukeTimes()
-                        end
+                        djui_popup_create("\\#FE0000\\Route deviation - ignoring best times", 1)
+                        deviatedRoute = true
+                        nukeTimes()
                         print("Route deviation on split")
                     end
-                elseif expected then
-                    color = "\\#FFFFFF\\"
-                    if deltaTime > 0 then
-                        color = "\\#FE0000\\"
-                    elseif deltaTime < 0 then
-                        color = "\\#21A212\\"
+                    splits[currentLevel][1] = true
+                    djui_popup_create(splitString, 1)
+                    
+                    for i, value in ipairs(entered) do
+                        print(i, value)
                     end
-                    splitString = "Entering " .. levels[i][2] .. " at " .. splitString .. " (" .. color .. formatTime(deltaTime, true) .. "\\#FFFFFF\\)"
-                    print("Best time on record")
-                else
-                    splitString = "Entering " .. levels[i][2] .. " at " .. splitString
-                    djui_popup_create("\\#FE0000\\Route deviation - ignoring best times", 1)
-                    deviatedRoute = true
-                    nukeTimes()
-                    print("Route deviation on split")
-                end
-                splits[currentLevel][1] = true
-                djui_popup_create(splitString, 1)
-                
-                for i, value in ipairs(entered) do
-                    print(i, value)
                 end
             end
         end
@@ -337,7 +300,7 @@ local function showStats()
                 djui_hud_set_color(231, 229, 50, 255)
                 djui_hud_print_text(level[2] .. " entry", screenWidth / 3 + screenWidth * 0.01, split_ypos, scale / 4)
                 djui_hud_print_text(time, calcRightAlign(time, scale / 4, screenWidth - (screenWidth / 3 + screenWidth * 0.01)), split_ypos, scale / 4)
-                if pbStats[1] ~= 0 then
+                if pbStats[1] ~= 0 and not deviatedRoute then
                     time2 = formatTime(splits[enteredID][2] - splits[enteredID][3], true)
                     if previousID == nil then
                         segmentCurrent = splits[enteredID][2]
@@ -363,7 +326,7 @@ local function showStats()
     djui_hud_set_color(231, 229, 50, 255)
     djui_hud_print_text("Grand Star", screenWidth / 3 + screenWidth * 0.01, split_ypos, scale / 4)
     djui_hud_print_text(time, calcRightAlign(time, scale / 4, screenWidth - (screenWidth / 3 + screenWidth * 0.01)), split_ypos, scale / 4)
-    if pbStats[1] ~= 0 then
+    if pbStats[1] ~= 0 and not deviatedRoute then
         time2 = formatTime(finalTime - pbStats[1], true)
             segmentCurrent = finalTime - splits[previousID][2]
             segmentPrevious = finalTime - splits[previousID][3]
@@ -447,7 +410,6 @@ end
 hook_event(HOOK_ON_INTERACT, starAction)
 hook_event(HOOK_MARIO_UPDATE, reset)
 hook_event(HOOK_ON_LEVEL_INIT, trackSplit)
-hook_event(HOOK_ON_LEVEL_INIT, setAA)
 hook_event(HOOK_ON_HUD_RENDER, drawTimer)
 --hook_chat_command("bowser3", " - wipe the current savefile and reset to Castle Grounds", bowser3)
 hook_chat_command("mxt_save_run", " - save currently finished run", saveRun)
