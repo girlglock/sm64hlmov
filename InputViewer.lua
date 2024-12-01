@@ -19,14 +19,14 @@ local screenHeight = djui_hud_get_screen_height()
 local scale = screenWidth * 0.0022
 
 local function updateButtons()
-    buttonStates.r[1] = gMarioStates[0].controller.stickX > 0
-    buttonStates.l[1] = gMarioStates[0].controller.stickX < 0
-    buttonStates.u[1] = gMarioStates[0].controller.stickY > 0
-    buttonStates.d[1] = gMarioStates[0].controller.stickY < 0
-    buttonStates.a[1] = (gMarioStates[0].controller.buttonDown & A_BUTTON) ~= 0
-    buttonStates.b[1] = (gMarioStates[0].controller.buttonDown & B_BUTTON) ~= 0
-    buttonStates.z[1] = (gMarioStates[0].controller.buttonDown & Z_TRIG) ~= 0
-    buttonStates.dpad_d[1] = (gMarioStates[0].controller.buttonDown & D_JPAD) ~= 0
+    buttonStates.r[1] = gControllers[0].stickX > 0
+    buttonStates.l[1] = gControllers[0].stickX < 0
+    buttonStates.u[1] = gControllers[0].stickY > 0
+    buttonStates.d[1] = gControllers[0].stickY < 0
+    buttonStates.a[1] = (gControllers[0].buttonDown & A_BUTTON) ~= 0
+    buttonStates.b[1] = (gControllers[0].buttonDown & B_BUTTON) ~= 0
+    buttonStates.z[1] = (gControllers[0].buttonDown & Z_TRIG) ~= 0
+    buttonStates.dpad_d[1] = (gControllers[0].buttonDown & D_JPAD) ~= 0
 end
 
 
