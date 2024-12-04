@@ -383,7 +383,7 @@ function create_default_sm64hlmov_config()
 	mod_storage_save_number("default.f",DefaultSettings.friction) -- friction
 	mod_storage_save_number("default.s",DefaultSettings.speed) -- speed
 	mod_storage_save_number("default.aa",DefaultSettings.airAcceleration) -- air acceleration
-	mod_storage_save_number("default.a",DefaultSettings.accelerate) -- accelerate
+	mod_storage_save_number("default.a",DefaultSettings.acceleration) -- accelerate
 	mod_storage_save_number("default.ac",DefaultSettings.airClamp) -- air clamp
 	mod_storage_save_number("default.g",DefaultSettings.gravity) -- gravity
 	mod_storage_save_number("default.efm",DefaultSettings.edgeFrictionMultiplier) -- edge friction multiplier
@@ -398,7 +398,7 @@ end
 function load_config(config)
 	if (mod_storage_load_number(config .. ".s") ~= nil) then
 		gGlobalSyncTable.Convar_Gravity = safe_load_number(config .. ".g", DefaultSettings.gravity)
-		gGlobalSyncTable.Convar_Accelerate = safe_load_number(config .. ".a", DefaultSettings.accelerate)
+		gGlobalSyncTable.Convar_Accelerate = safe_load_number(config .. ".a", DefaultSettings.acceleration)
 		gGlobalSyncTable.Convar_AirAccelerate = safe_load_number(config .. ".aa", DefaultSettings.airAcceleration)
 		gGlobalSyncTable.Convar_AirClamp = safe_load_number(config .. ".ac", DefaultSettings.airClamp)
 		gGlobalSyncTable.Convar_PlayerSpeed = safe_load_number(config .. ".s", DefaultSettings.speed)
