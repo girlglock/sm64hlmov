@@ -396,7 +396,7 @@ function create_default_sm64hlmov_config()
 end
 
 function load_config(config)
-	if (mod_storage_load_number(config .. ".s") ~= nil) then
+	if (mod_storage_load_number(config .. ".s") ~= nil and mod_storage_load_number(config .. ".s") > 0) then
 		gGlobalSyncTable.Convar_Gravity = safe_load_number(config .. ".g", DefaultSettings.gravity)
 		gGlobalSyncTable.Convar_Accelerate = safe_load_number(config .. ".a", DefaultSettings.acceleration)
 		gGlobalSyncTable.Convar_AirAccelerate = safe_load_number(config .. ".aa", DefaultSettings.airAcceleration)

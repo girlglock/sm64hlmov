@@ -39,6 +39,7 @@
   - You will likely also want to set up your key binds to be more like Half-Life. This can be done under Options -> N64 Binds.
 
 ### Misc Notes
+- Try turning Deceleration all the way down under camera settings. It may make the mouse "feel" better.
 - If you have a non-sm64hlmov custom copy of mQuake, you will need to delete it entirely when installing this version of mQuake; this is because sm64coopdx will preferentially use the compiled luac files over the lua source files distributed with this version.
 - No scripts or autohotkeys are allowed in the run. Auto hopping is allowed and enabled by default in mQuake.
 - Use `/mq_server DeleteConfig default` to restore the default run-legal configuration.
