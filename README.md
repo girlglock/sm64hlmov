@@ -47,4 +47,5 @@
 - Dpad Down is a brake/walk button similar to holding 'E' in Half-Life.
 - The Discord authorize thing is annoying and there's no launch flag (yet) to turn it off. However, the perms it asks for are relatively innocuous, and it'll stop asking after you authorize it.
   - https://github.com/coop-deluxe/sm64coopdx/issues/514
+- You may enable the Day Night Cycle DX mod to get a "real" less nauseating skyboxes. You can use `/time scale 0` to "lock" in the time. If you do it around 8AM, it should look right.
 - Shout out to Jeepy (twitch.tv/jeepy) who found mQuake and silently routed it for months to turn it into a real speedrun!
