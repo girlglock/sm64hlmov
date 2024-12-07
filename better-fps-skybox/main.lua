@@ -59,24 +59,18 @@ function bhv_dnc_skybox_loop(o)
     o.oFaceAngleYaw = (minutes / 24) * 0x10000
 end
 
-local lastSkyBoxObj = nil
-
 local function update()
     local skybox = get_skybox()
     local i = 0
     if skybox >= BACKGROUND_CUSTOM then skybox = BACKGROUND_OCEAN_SKY end
     if obj_get_first_with_behavior_id(bhvDNCSkybox) == nil and skybox ~= -1 and obj_get_first_with_behavior_id(bhvDNCNoSkybox) == nil then
-        if lastSkyBoxObj ~= nil then
-            obj_mark_for_deletion(lastSkyBoxObj)
-            -- djui_chat_message_create("Deleting old skybox");
-        end
         -- djui_chat_message_create("Spawning skybox");
         local model = smlua_model_util_get_id("dnc_skybox_geo")
         lastSkyBox = skybox
         local overrideModel = dnc_call_hook(DNC_HOOK_SET_SKYBOX_MODEL, i, skybox)
         if overrideModel ~= nil and type(overrideModel) == "number" then model = overrideModel end
 
-        lastSkyBoxObj = spawn_non_sync_object(
+        spawn_non_sync_object(
             bhvDNCSkybox,
             model,
             0, 0, 0,
