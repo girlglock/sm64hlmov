@@ -29,7 +29,7 @@
   - Leave all other settings at default
   - Click Back
   - Click "Mods and Gamemodes"
-  - Enable mQuake [sm64hlmov custom], IL Run Helper (for single level runs) and/or MariomodXT (for full runs)
+  - Enable mQuake [sm64hlmov custom] and MariomodXT (for full runs) OR IL Run Helper (for single level runs)
   - Optionally enable Better FPS Skybox, mQuake Input Viewer, HL1 HUD, Half-Life Crowbar, and Half-Life Music
   - Disable all other mods
   - Click Back
