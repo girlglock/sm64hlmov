@@ -24,12 +24,12 @@
   - Drag your sm64 z64 ROM file into the window
   - Click Host
   - Click Settings
-  - Check "Skip Intro Cutscene"
+  - **Check "Skip Intro Cutscene" (this fixes a bug that prevents you from moving!)**
   - Set "On Star Collection" to "Stay in Level"
   - Leave all other settings at default
   - Click Back
   - Click "Mods and Gamemodes"
-  - Enable mQuake, IL Run Helper (for single level runs) and/or MariomodXT (for full runs)
+  - Enable mQuake [sm64hlmov custom], IL Run Helper (for single level runs) and/or MariomodXT (for full runs)
   - Optionally enable mQuake Input Viewer, HL1 HUD, Half-Life Crowbar, and Half-Life Music
   - Disable all other mods
   - Click Back
