@@ -421,7 +421,7 @@ function load_config(config)
 			gGlobalSyncTable.Convar_PlayerAutoHop = true -- Set autohop default true
 			save_config(config)
 		end
-	elseif (mod_storage_load_number("default.s") ~= nil) then
+	elseif (mod_storage_load_number("default.s") ~= nil and mod_storage_load_number("default.s") > 0) then
 		djui_chat_message_create("\\#A0FFE0\\CANNOT FIND CONFIG: " .. config)
 		load_config("default")
 	else
@@ -506,6 +506,11 @@ function on_level_init()
 end
 function local_update(m) 
 	if (m == nil) then return true end
+
+	-- Make ABSOLUTELY CERTAIN the configs aren't buggered
+	if (gGlobalSyncTable.Convar_PlayerSpeed <= 0) then
+		load_config("default")
+	end
 	
 	if (m.health <= 0xFF) then
 		gFirstPersonCamera.offset.y = -110
@@ -818,6 +823,7 @@ if (network_is_server()) then
 		if args[1] == "DeleteConfig" and args[2] == "default" then
 			create_default_sm64hlmov_config()
 			djui_chat_message_create("\\#A0FFE0\\Restored default config")
+			load_config("default")
 			return true
 		elseif args[1] == "DeleteConfig" and args[2] ~= nil then
 			if (mod_storage_load_number(args[2] .. ".s") ~= nil) then
