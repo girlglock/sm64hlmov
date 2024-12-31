@@ -237,10 +237,9 @@ function on_pvp(m,v)
 	end
 end
 
-local function render_speed(w2,h2,textWidth,h_offset,hspeed_text,scale,height) 
+function render_speed(w2,h2,textWidth,h_offset,hspeed_text,scale,height) 
 	local scale1 = scale*0.5
 	djui_hud_set_color(0,0,0,100)
-	djui_hud_render_rect((w2*0.5) - (textWidth*scale1) - 1,(h2*h_offset),textWidth*scale + 2,height)
 	djui_hud_set_color(255,255,255,255)
 	djui_hud_print_text(hspeed_text, (w2*0.5) - (textWidth*scale1),(h2*h_offset),scale)
 end
@@ -269,20 +268,24 @@ function render_hud_effects()
 		if (m.health <= 0xFF or m.action == ACT_UNINITIALIZED or m.action == ACT_DISAPPEARED) then return end
 		
 		djui_hud_set_resolution(RESOLUTION_N64)
-		djui_hud_set_font(FONT_NORMAL)
+		djui_hud_set_font(FONT_MENU)
 		
 		local w2 = djui_hud_get_screen_width()
 		local h2 = djui_hud_get_screen_height()
 		
 		local hspeed = m.forwardVel*sv_scalerate_inverse ; if (DM_ACTION_QPHYS[m.action] == 1) then hspeed = vec3f_length({x=m.vel.x,y=0,z=m.vel.z}) end
-		local hspeed_text = tostring(math.floor(hspeed))
+		local hspeed_text = string.format("%03d", math.floor(hspeed))
 		local textWidth = djui_hud_measure_text(hspeed_text)
-		render_speed(w2,h2,textWidth,0.8,hspeed_text,0.5,15)
+		render_speed(w2,h2,textWidth,0.7,hspeed_text,0.25,15)
 		
-		local vspeed = m.vel.y ; if (DM_ACTION_QPHYS[m.action] ~= 1) then vspeed = vspeed * sv_scalerate_inverse end
-		local vspeed_text = tostring(math.floor(vspeed))
-		local vtextWidth = djui_hud_measure_text(vspeed_text)
-		render_speed(w2,h2,vtextWidth,0.75,vspeed_text,0.25,7.5)
+		--local vspeed = m.vel.y ; if (DM_ACTION_QPHYS[m.action] ~= 1) then vspeed = vspeed * sv_scalerate_inverse end
+		--local vspeed_text = tostring(math.floor(vspeed))
+		--local vtextWidth = djui_hud_measure_text(vspeed_text)
+		--render_speed(w2,h2,vtextWidth,0.75,vspeed_text,0.25,7.5)
+
+		local prespeed_text = string.format("%03d", math.floor(prespeed))
+		local pretextWidth = djui_hud_measure_text(prespeed_text)
+		render_speed(w2,h2,pretextWidth,0.75,prespeed_text,0.15,7.5)
 		
 		-- local vspeed_text = tostring(m.area.camera.cutscene)
 		-- local vTextWidth = djui_hud_measure_text(vspeed_text)
@@ -296,12 +299,12 @@ function render_hud_effects()
 		-- local usedObj2 = djui_hud_measure_text(usedObjT2)
 		-- render_speed(w2,h2,usedObj2,0.55,usedObjT2,0.25,7.5)
 		
-		if (m.capTimer > 0) then
-			local capTimer_Seconds = math.floor(m.capTimer * 0.03333333333333333)
-			local capText = "Cap Timer: " .. tostring(capTimer_Seconds)
-			local capWidth = djui_hud_measure_text(capText)
-			render_speed(w2,h2,capWidth,0.875,capText,0.5,15)
-		end
+		--if (m.capTimer > 0) then
+		--	local capTimer_Seconds = math.floor(m.capTimer * 0.03333333333333333)
+		--	local capText = "Cap Timer: " .. tostring(capTimer_Seconds)
+		--	local capWidth = djui_hud_measure_text(capText)
+		--	render_speed(w2,h2,capWidth,0.875,capText,0.5,15)
+		--end
 		-- m.area.camera.cutscene = 0
 		-- m.statusForCamera.cameraEvent = 0
 		-- if (m.area.camera.cutscene > 0) then
