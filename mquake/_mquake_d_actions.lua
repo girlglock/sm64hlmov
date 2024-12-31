@@ -1,7 +1,7 @@
 if SM64COOPDX_VERSION == nil then return end
 local play_step_sound,set_mario_action,play_character_sound,vec3f_length,perform_ground_step,vec3f_copy,perform_air_step,clampf,vec3f_add,set_mario_particle_flags,play_mario_heavy_landing_sound = play_step_sound,set_mario_action,play_character_sound,vec3f_length,perform_ground_step,vec3f_copy,perform_air_step,clampf,vec3f_add,set_mario_particle_flags,play_mario_heavy_landing_sound
 
-
+prespeed = "000"
 
 local function play_local_footstep_sounds(m,rate,max) 
 	cl_footstepTimer = cl_footstepTimer + rate
@@ -55,6 +55,8 @@ local function local_act_dm_grounded_movement(m)
 		
 		if (m.vel.y > 320*sv_jumpheight) then m.vel.y = 320*sv_jumpheight end
 		
+		prespeed = vec3f_length({x=m.vel.x,y=0,z=m.vel.z})
+
 		play_mario_jump_sound(m)
 		
 		SV_PlayerMovement_Relative(m)
@@ -322,6 +324,7 @@ local function local_act_dm_ground_pound(m)
 				
 				set_mario_action(m, ifelse(metal_underwater,ACT_DM_AIR_MOVEMENT_METAL,ACT_DM_AIR_MOVEMENT), 0)
 				play_character_sound(m,CHAR_SOUND_YAHOO)
+				prespeed = vec3f_length({x=m.vel.x,y=0,z=m.vel.z})
 			else
 				m.forwardVel = 0
 				m.vel.x = 0
@@ -512,6 +515,3 @@ end
 function act_dm_pole_movement(m)
 	if (m.playerIndex == 0) then return local_act_dm_pole_movement(m) else return prediction_act_dm_pole_movement(m) end
 end
-
-
-
