@@ -22,7 +22,7 @@ hook_event(HOOK_ALLOW_INTERACT, allow_interact)
 hook_event(HOOK_ON_PVP_ATTACK, on_pvp)
 hook_event(HOOK_ALLOW_PVP_ATTACK, allow_pvp)
 hook_event(HOOK_ON_OBJECT_RENDER, on_object_render)
-hook_event(HOOK_ON_HUD_RENDER_BEHIND, render_hud_effects)
+hook_event(HOOK_ON_HUD_RENDER, render_hud_effects)
 hook_event(HOOK_UPDATE, on_game_update)
 
 hook_chat_command('mq', "[list] - \\#FFE0A0\\List all commands", mquake)
